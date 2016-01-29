@@ -20,6 +20,7 @@ urlpatterns = [
     url(r'^accounts/', include('allauth.urls')),
 
     # Your stuff: custom urls includes go here
+    url(r'^unlocode/', include('unlocode.urls', namespace="unlocode")),
 
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
