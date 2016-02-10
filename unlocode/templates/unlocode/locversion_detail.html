@@ -1,30 +1,34 @@
 {% extends "base.html" %}
+
 {% load static %}{% load i18n %}
 {% block title %}Versions{% endblock %}
 
 {% block content %}
-    <div class="container">
-        <h2>Version</h2>
-    </div>
 
-    <div class="table-container">
-        <table class="table table-hover">
-            <thead>
-                <th>Name</th>
-                <th class="hidden-xs">Created by</th>
-                <th class="hidden-xs">Timestamp</th>
-                <th>Files</th>
-            </thead>
-            <tbody>
-                {% for locversion in version_list %}
-                    <tr>
-                        <td>{{ locversion.version }}</td>
-                        <td class="hidden-xs">TBD</td>
-                        <td class="hidden-xs">OCT 21 2015 PM 07:28</td>
-                        <td>Yes</td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
+    <br>
+    <h2>{{ version.version }} </h2>
+    Created on: {{ version.created }} <br>
+    Modified on: {{ version.modified }} <br>
+    Edited by: {{ version.creator }}
+    <br>
+          <table>
+                <th>File Name</th>
+                <th>Status</th>
+            {% for file in files %}
+                <tr>
+                    <td>{{ file.0 }}</td>
+                    {% if file.1 %}
+                        <td class="text-success"><i class="fa fa-check-circle"></i></td>
+                        {% else %}
+                        <td class="text-danger"><i class="fa fa-times-circle"></i></td>
+                    {% endif %}
+                </tr>
+            {% endfor %}
+          </table>
+    <br>
+
+        <a href={% url 'unlocode:update' version.version %} class="btn btn-primary btn-large" role="button" >Change</a>
+        <a href={% url 'unlocode:delete' version.version %} class="btn btn-danger btn-large" role="button" >Delete</a>
+
+
 {% endblock content %}

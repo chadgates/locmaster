@@ -1,30 +1,15 @@
 {% extends "base.html" %}
+{% load crispy_forms_tags %}
 {% load static %}{% load i18n %}
-{% block title %}Versions{% endblock %}
+{% block title %}Delete Version ?{% endblock %}
 
 {% block content %}
-    <div class="container">
-        <h2>Version New</h2>
-    </div>
+    <br>
+    <form action="" method="post">{% csrf_token %}
+    {{ form|crispy }}
+        <p>Are you sure you want to delete "{{ object }}"?</p>
+        <input type="submit" class="btn btn-danger" value="Confirm" />
+     <a href={% url 'unlocode:list' %} class="btn btn-secondary btn-large" role="button" >Cancel</a>
+    </form>
 
-    <div class="table-container">
-        <table class="table table-hover">
-            <thead>
-                <th>Name</th>
-                <th class="hidden-xs">Created by</th>
-                <th class="hidden-xs">Timestamp</th>
-                <th>Files</th>
-            </thead>
-            <tbody>
-                {% for locversion in version_list %}
-                    <tr>
-                        <td><a href=/{{ locversion.version }}/>{{ locversion.version }}</a></td>
-                        <td class="hidden-xs">TBD</td>
-                        <td class="hidden-xs">OCT 21 2015 PM 07:28</td>
-                        <td>Yes</td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
 {% endblock content %}

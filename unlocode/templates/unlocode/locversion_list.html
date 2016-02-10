@@ -3,6 +3,7 @@
 {% block title %}Versions{% endblock %}
 
 {% block content %}
+    <br>
     <div class="container">
         <h2>Version</h2>
     </div>
@@ -10,21 +11,24 @@
     <div class="table-container">
         <table class="table table-hover">
             <thead>
-                <th>Name</th>
-                <th class="hidden-xs">Created by</th>
-                <th class="hidden-xs">Timestamp</th>
-                <th>Files</th>
+                <tr>
+                    <th>Name</th>
+                    <th>Timestamp</th>
+                    <th>Creator</th>
+                    <th>Action</th>
+                </tr>
             </thead>
             <tbody>
                 {% for locversion in version_list %}
                     <tr>
-                        <td>{{ locversion.version }}</td>
-                        <td class="hidden-xs">TBD</td>
-                        <td class="hidden-xs">OCT 21 2015 PM 07:28</td>
-                        <td>Yes</td>
+                        <th scope="row"><a href={{ locversion.get_absolute_url }}> {{ locversion.version }} </a> </th>
+                        <td> {% if locversion.modified %} {{ locversion.modified }} {% else %} {{ locversion.created }}{% endif %}</td>
+                        <td>{{ locversion.creator }}</td>
+                        <td> <a href={% url 'unlocode:update' locversion.version %} class="btn btn-success btn-sm"><i class="fa fa-pencil" ></i></a>&nbsp; <a href={% url 'unlocode:delete' locversion.version %} class="btn btn-danger btn-sm"> <i class="fa fa-trash"></i></a></td>
                     </tr>
                 {% endfor %}
             </tbody>
         </table>
+         <a href={% url 'unlocode:create' %} class="btn btn-primary btn-large" role="button" >Add new</a>
     </div>
 {% endblock content %}
