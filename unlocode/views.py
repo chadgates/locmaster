@@ -8,7 +8,8 @@ from django.core.urlresolvers import reverse_lazy
 from unlocode.models import LocVersion, Locode
 from unlocode.initializedata import populateInitial
 from unlocode.csvimport import importUNLOCODE, check_version_dir
-
+from django.db.models import Q
+from django.db.models import Max
 
 class UnLocVersionMixin(object):
     model = LocVersion
@@ -32,14 +33,38 @@ class UnLocVersionDetail(LoginRequiredMixin, DetailView):
         context['complete']=not(False in dict(context["files"]).values())
         return context
 
+class UnLocodeSearch(LoginRequiredMixin, ListView):
+    model = Locode
+    context_object_name = "unlocode"
+    queryset = Locode.objects.none()
+    template_name = 'unlocode/locode_search.html'
+
+    def get_queryset(self):
+        queryset = super(UnLocodeSearch, self).get_queryset()
+
+        q = self.request.GET.get("q")
+        if q:
+
+            return Locode.objects.filter(
+                Q(locode__iexact=q)|
+                Q(locname__istartswith=q) |
+                Q(locnamewodia__istartswith=q)).annotate(Max('version_id'))
+        return queryset
+
+
 
 class UnLocodeList(LoginRequiredMixin, ListView):
     model = Locode
     context_object_name = 'unlocode'
+    allow_empty = False
 
     def get_queryset(self):
         return Locode.objects.filter(locode=self.kwargs.get('locode')).order_by("-version")
 
+    def get_context_data(self, **kwargs):
+        context = super(UnLocodeList, self).get_context_data(**kwargs)
+        context["thelocode"] = self.kwargs.get('locode')
+        return context
 
 
 class UnLocVersionList(LoginRequiredMixin, ListView):

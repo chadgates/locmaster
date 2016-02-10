@@ -54,6 +54,7 @@
                         <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">UN Locode</a>
                         <div class="dropdown-menu">
                             <a class="dropdown-item" href="{% url 'unlocode:list' %}">{% trans "Version" %}</a>
+                            <a class="dropdown-item" href="{% url 'unlocode:list-search' %}">{% trans "Search" %}</a>
                             <div class="dropdown-divider"></div>
                             <a class="dropdown-item" href="{% url 'unlocode:populate' %}">{% trans "Populate" %}</a>
                         </div>

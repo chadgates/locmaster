@@ -21,7 +21,7 @@ urlpatterns = [
 
     # Your stuff: custom urls includes go here
     url(r'^unlocode/', include('unlocode.urls', namespace="unlocode")),
-
+    url(r'^api/', include('locmasterapi.urls', namespace="api")),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

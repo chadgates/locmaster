@@ -1,12 +1,20 @@
 {% extends "base.html" %}
-
+{% load crispy_forms_tags %}
 {% load static %}{% load i18n %}
 {% block title %}Versions{% endblock %}
 
 {% block content %}
-
     <br>
-    <h2>{{ thelocode }} </h2>
+    <form action="" method="GET">
+    {{ form|crispy }}
+        <div class="input-group">
+            <input type="text" class="form-control" placeholder="Search for..." name="q">
+            <span class="input-group-btn">
+            <button class="btn btn-primary" type="button">Go!</button>
+      </span>
+    </div>
+    </form>
+
     <br>
         <div class="table-responsive">
         <table class="table table-striped">
@@ -24,6 +32,7 @@
                 <th>Remarks</th>
                 <th>Status</th>
                 <th>Version</th>
+                <th>Action</th>
             </thead>
             <tbody>
               {% for location in unlocode %}
@@ -41,6 +50,7 @@
                     <td>{{ location.locremarks }}</td>
                     <td>{{ location.locstatus }}</td>
                     <td>{{ location.version }}</td>
+                    <td><a href={% url 'unlocode:list-code' location.locode %} class="btn btn-secondary btn-sm"><i class="fa fa-info" ></i></a></td>
                 </tr>
               {% endfor %}
             </tbody>

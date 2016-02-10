@@ -53,4 +53,9 @@ urlpatterns = [
         view=unlocode_views.UnLocodeList.as_view(),
         name='list-code',
     ),
+    url(
+        regex=r'^code/$',
+        view=unlocode_views.UnLocodeSearch.as_view(),
+        name='list-search',
+    ),
 ]
