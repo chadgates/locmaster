@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% load static %}{% load i18n %}
+{% block title %}Versions{% endblock %}
+
+{% block content %}
+
+    <br>
+    <h2>{{ thelocode }} </h2>
+    <br>
+        <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <th>Chg</th>
+                <th>Country</th>
+                <th>Place</th>
+                <th>Name</th>
+                <th>Name(-dia)</th>
+                <th>Subdiv</th>
+                <th>Function</th>
+                <th>Date</th>
+                <th>IATA</th>
+                <th>Coordinates</th>
+                <th>Remarks</th>
+                <th>Status</th>
+                <th>Version</th>
+            </thead>
+            <tbody>
+              {% for location in unlocode %}
+                <tr>
+                    <td>{{ location.locchangeindicator }}</td>
+                    <td>{{ location.locodecountry }}</td>
+                    <td>{{ location.locodeplace }}</td>
+                    <td>{{ location.locname }}</td>
+                    <td>{{ location.locnamewodia }}</td>
+                    <td>{{ location.locsubdivision }}</td>
+                    <td>{{ location.locfunction }}</td>
+                    <td>{{ location.locdate }}</td>
+                    <td>{{ location.lociata }}</td>
+                    <td>{{ location.locoordinates }}</td>
+                    <td>{{ location.locremarks }}</td>
+                    <td>{{ location.locstatus }}</td>
+                    <td>{{ location.version }}</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+    <br>
+
+{% endblock content %}
