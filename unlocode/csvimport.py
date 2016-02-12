@@ -1,9 +1,13 @@
-from unlocode.models import Country, SubDivision, Locode, LocCountry, LocFunction, LocStatus, LocSubdivison, LocVersion
+from unlocode.models import Country, SubDivision, Locode, LocCountry, LocFunction, LocStatus, LocSubdivision, LocVersion
+from unlocode.models import LocChangeIndicator
 import os
 import csv
-
+import logging
+from django.db import IntegrityError, transaction
 
 def cleanoutVersion(version):
+    logger = logging.getLogger(__name__)
+
     msg = str(Locode.objects.filter(version=version).delete()[0]) + " LocCodes deleted"
     msg += "\n"
     msg += str(LocCountry.objects.filter(version=version).delete()[0]) + " LocCountries deleted"
@@ -12,12 +16,17 @@ def cleanoutVersion(version):
     msg += "\n"
     msg += str(LocStatus.objects.filter(version=version).delete()[0]) + " LocStatus deleted"
     msg += "\n"
-    msg += str(LocSubdivison.objects.filter(version=version).delete()[0]) + " LocSubdivisions deleted"
+    msg += str(LocSubdivision.objects.filter(version=version).delete()[0]) + " LocSubdivisions deleted"
+
+    logger.info(msg)
     return msg
 
 
 def importUNLOCODE(version):
+    logger = logging.getLogger(__name__)
+
     path = os.getcwd() + "/unlocode/data/versions/" + version + "/"
+    logger.info("Start import for " + path)
 
     if not(False in dict(check_version_dir(version)).values()):
         objversion = LocVersion.objects.get(version=version)
@@ -34,6 +43,8 @@ def importUNLOCODE(version):
         msg += importCodeList(objversion, version, path)
     else:
         msg = "Nothing imported, files incomplete. "
+
+    logger.info(msg)
     return msg
 
 
@@ -70,7 +81,7 @@ def importFunctionClassifiers(objversion, version, path):
 
 
 def importStatusIndicators(objversion, version, path):
-    csv_filepathname = path + "FunctionClassifiers.txt"
+    csv_filepathname = path + "StatusIndicators.txt"
     dataReader = csv.reader(open(csv_filepathname, encoding='utf-8'), delimiter=',', quotechar='"')
 
     rowcounter = 0
@@ -90,9 +101,9 @@ def importLocSubdivision(objversion, version, path):
     dataReader = csv.reader(open(csv_filepathname, encoding='utf-8'), delimiter=',', quotechar='"')
     rowcounter = 0
     for row in dataReader:
-        locsubdivision = LocSubdivison()
-        locsubdivision.alpha2code = row[0]
-        # locsubdivision.alpha2code = LocCountry.objects.get(alpha2code = row[0], version = version)
+        locsubdivision = LocSubdivision()
+        #locsubdivision.alpha2code = row[0]
+        locsubdivision.alpha2code = LocCountry.objects.filter(alpha2code = row[0], version = version).first()
         locsubdivision.shortcode = row[1]
         locsubdivision.name = row[2]
         locsubdivision.version = objversion
@@ -103,6 +114,7 @@ def importLocSubdivision(objversion, version, path):
 
 
 def importCodeList(objversion, version, path):
+    logger = logging.getLogger(__name__)
     csv_filepathname = path + "CodeList.txt"
     dataReader = csv.reader(open(csv_filepathname, encoding='utf-8'), delimiter=',', quotechar='"')
 
@@ -112,30 +124,37 @@ def importCodeList(objversion, version, path):
     for row in dataReader:
         if row[2] != '':
             locode = Locode()
-            locode.locchangeindicator = row[0]
-            locode.locodecountry = row[1]
+            locode.locchangeindicator = LocChangeIndicator.objects.filter(changecode=row[0]).first()
+            locode.locodecountry = LocCountry.objects.filter(alpha2code=row[1], version=objversion).first()
             locode.locodeplace = row[2]
             locode.locname = row[3]
             locode.locnamewodia = row[4]
-            locode.locsubdivision = row[5]
+            locode.locsubdivision = LocSubdivision.objects.filter(shortcode=row[5], version=objversion, alpha2code=locode.locodecountry_id).first()
             locode.locfunction = row[7]
-            locode.locstatus = row[6]
+            locode.locstatus = LocStatus.objects.filter(statuscode=row[6], version=objversion).first()
             locode.locdate = row[8]
             locode.lociata = row[9]
             locode.locoordinates = row[10]
             locode.locremarks = row[11]
             # locode.locode = row[1]+row[2]
             locode.version = objversion
-            locode.save()
-            savecounter += 1
-
+            try:
+                with transaction.atomic():
+                    locode.save()
+                    savecounter += 1
+            except IntegrityError as ex:
+                logger.exception(ex)
+                skipcounter +=1
         else:
             skipcounter += 1
 
         rowcounter += 1
 
-    return str(rowcounter) + " UN/LOCODES (" + version + ") processed: " + str(savecounter) + \
+    msg = str(rowcounter) + " UN/LOCODES (" + version + ") processed: " + str(savecounter) + \
            " created / " + str(skipcounter) + " skipped."
+
+    logger.info(msg)
+    return msg
 
 
 def importsubdivisons():

@@ -1,4 +1,4 @@
-from unlocode.models import LocChangeIndicator, LocChangeTags
+from unlocode.models import LocChangeIndicator, LocChangeTag
 
 
 def addLocChangeIndicator(changecode, description):
@@ -9,7 +9,7 @@ def addLocChangeIndicator(changecode, description):
 
 
 def addLocChangeTag(changetag, description):
-    locchangetag = LocChangeTags.objects.get_or_create(changetag=changetag,
+    locchangetag = LocChangeTag.objects.get_or_create(changetag=changetag,
                                                        description=description)[0]
     locchangetag.save()
     return locchangetag

@@ -37,18 +37,18 @@
             <tbody>
               {% for location in unlocode %}
                 <tr>
-                    <td>{{ location.locchangeindicator }}</td>
+                    <td>{{ location.locchangeindicator|default_if_none:""  }}</td>
                     <td>{{ location.locodecountry }}</td>
                     <td>{{ location.locodeplace }}</td>
                     <td>{{ location.locname }}</td>
                     <td>{{ location.locnamewodia }}</td>
-                    <td>{{ location.locsubdivision }}</td>
+                    <td>{{ location.locsubdivision|default_if_none:""  }}</td>
                     <td>{{ location.locfunction }}</td>
                     <td>{{ location.locdate }}</td>
                     <td>{{ location.lociata }}</td>
                     <td>{{ location.locoordinates }}</td>
                     <td>{{ location.locremarks }}</td>
-                    <td>{{ location.locstatus }}</td>
+                    <td>{{ location.locstatus|default_if_none:"" }}</td>
                     <td>{{ location.version }}</td>
                     <td><a href={% url 'unlocode:list-code' location.locode %} class="btn btn-secondary btn-sm"><i class="fa fa-info" ></i></a></td>
                 </tr>

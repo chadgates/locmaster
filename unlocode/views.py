@@ -48,7 +48,8 @@ class UnLocodeSearch(LoginRequiredMixin, ListView):
             return Locode.objects.filter(
                 Q(locode__iexact=q)|
                 Q(locname__istartswith=q) |
-                Q(locnamewodia__istartswith=q)).annotate(Max('version_id'))
+                Q(locnamewodia__istartswith=q)).order_by('locode', 'version').distinct('locode')
+
         return queryset
 
 
@@ -59,7 +60,7 @@ class UnLocodeList(LoginRequiredMixin, ListView):
     allow_empty = False
 
     def get_queryset(self):
-        return Locode.objects.filter(locode=self.kwargs.get('locode')).order_by("-version")
+        return Locode.objects.filter(locode=self.kwargs.get('locode')).order_by("version")
 
     def get_context_data(self, **kwargs):
         context = super(UnLocodeList, self).get_context_data(**kwargs)
