@@ -7,9 +7,10 @@ from django.views.generic import DetailView, ListView, UpdateView, CreateView, D
 from django.core.urlresolvers import reverse_lazy
 from unlocode.models import LocVersion, Locode
 from unlocode.initializedata import populateInitial
-from unlocode.csvimport import importUNLOCODE, check_version_dir
+from unlocode.csvimport import check_version_dir
+from unlocode.tasks import importVersion
 from django.db.models import Q
-from django.db.models import Max
+
 
 class UnLocVersionMixin(object):
     model = LocVersion
@@ -88,7 +89,9 @@ class UnLocVersionUpdate(LoginRequiredMixin, UnLocVersionMixin, UpdateView):
 
     def post(self, request, *args, **kwargs):
         if 'load' in request.POST:
-            messages.info(request, importUNLOCODE(str(self.kwargs.get('pk'))))
+            importVersion.delay(str(self.kwargs.get('pk')))
+            messages.info(request, "Background Job Started, come back to see if it is done")
+            #messages.info(request, importUNLOCODE(str(self.kwargs.get('pk'))))
             return super(UnLocVersionUpdate, self).get(request, *args, **kwargs)
         else:
             return super(UnLocVersionUpdate, self).post(request, *args, **kwargs)

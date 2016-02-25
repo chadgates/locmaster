@@ -1,6 +1,7 @@
 from django.conf.urls import url
 from unlocode import views as unlocode_views
 
+
 urlpatterns = [
     # URL pattern for the UNLocVersionListView
     url(

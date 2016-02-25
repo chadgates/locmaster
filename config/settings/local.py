@@ -60,7 +60,15 @@ TEST_RUNNER = 'django.test.runner.DiscoverRunner'
 
 ########## CELERY
 # In development, all tasks will be executed locally by blocking until the task returns
-CELERY_ALWAYS_EAGER = True
+CELERY_ALWAYS_EAGER = False
 ########## END CELERY
 
 # Your local stuff: Below this line define 3rd party library settings
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+
+INSTALLED_APPS += ('djcelery', )
+CELERY_RESULT_BACKEND='djcelery.backends.database:DatabaseBackend'
+
+#CELERY_RESULT_BACKEND = env("CELERY_BROKER_URL", default='djcelery.backends.database:DatabaseBackend')

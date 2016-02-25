@@ -7,9 +7,9 @@ class CountryNameSerializer(serializers.ModelSerializer):
         model = LocCountry
         fields = ('name', 'alpha2code')
 
+
 class LocodeSerializer(serializers.ModelSerializer):
 
-    #locodecountry = CountryNameSerializer(many=False, read_only=True)
     locodecountry = serializers.StringRelatedField(many=False)
     locsubdivision = serializers.StringRelatedField(many=False)
 

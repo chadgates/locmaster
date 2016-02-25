@@ -1,4 +1,5 @@
-from django.db import models
+#from django.db import models
+from django.contrib.gis.db import models
 from django.core.urlresolvers import reverse
 
 
@@ -130,8 +131,8 @@ class LocSubdivision(models.Model):
 class Locode(models.Model):
     # as described here: http://www.unece.org/fileadmin/DAM/cefact/locode/Service/LocodeColumn.htm
 
-    locchangeindicator = models.ForeignKey(LocChangeIndicator, on_delete=models.PROTECT, blank=True, null=True)
-    locstatus = models.ForeignKey(LocStatus, on_delete=models.PROTECT, blank=True, null=True)
+    locchangeindicator = models.ForeignKey(LocChangeIndicator, on_delete=models.SET_NULL, blank=True, null=True)
+    locstatus = models.ForeignKey(LocStatus, on_delete=models.SET_NULL, blank=True, null=True)
     locodecountry = models.ForeignKey(LocCountry, on_delete=models.CASCADE)
     locodeplace = models.CharField(max_length=3)
     locname = models.CharField(max_length=100, db_index=True)

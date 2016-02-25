@@ -5,7 +5,21 @@ import csv
 import logging
 from django.db import IntegrityError, transaction
 
+
+def saveatomic(object, logger):
+    result = False
+    try:
+        with transaction.atomic():
+                object.save()
+    except IntegrityError as ex:
+        if logger:
+            logger.exception(ex)
+
+    return result
+
+
 def cleanoutVersion(version):
+
     logger = logging.getLogger(__name__)
 
     msg = str(Locode.objects.filter(version=version).delete()[0]) + " LocCodes deleted"
@@ -23,12 +37,13 @@ def cleanoutVersion(version):
 
 
 def importUNLOCODE(version):
+
     logger = logging.getLogger(__name__)
 
     path = os.getcwd() + "/unlocode/data/versions/" + version + "/"
     logger.info("Start import for " + path)
 
-    if not(False in dict(check_version_dir(version)).values()):
+    if not (False in dict(check_version_dir(version)).values()):
         objversion = LocVersion.objects.get(version=version)
         msg = cleanoutVersion(version)
         msg += "\n"
@@ -49,68 +64,127 @@ def importUNLOCODE(version):
 
 
 def importCountryCodes(objversion, version, path):
+    logger = logging.getLogger(__name__)
     csv_filepathname = path + "CountryCodes.txt"
     dataReader = csv.reader(open(csv_filepathname, encoding='utf-8'), delimiter=',', quotechar='"')
 
+    savecounter = 0
+    skipcounter = 0
     rowcounter = 0
     for row in dataReader:
         locountry = LocCountry()
         locountry.alpha2code = row[0]
         locountry.name = row[1]
         locountry.version = objversion
-        locountry.save()
+        #locountry.save()
+        if saveatomic(locountry, logger):
+            savecounter += 1
+        else:
+            skipcounter += 1
+
         rowcounter += 1
 
-    return str(rowcounter) + " country codes imported for version: " + version
+    msg = str(rowcounter) + " Country codes (" + version + ") processed: " + str(savecounter) + \
+          " created / " + str(skipcounter) + " skipped."
+
+    logger.info(msg)
+
+    return msg
 
 
 def importFunctionClassifiers(objversion, version, path):
+    logger = logging.getLogger(__name__)
     csv_filepathname = path + "FunctionClassifiers.txt"
     dataReader = csv.reader(open(csv_filepathname, encoding='utf-8'), delimiter=',', quotechar='"')
 
     rowcounter = 0
+    skipcounter = 0
+    savecounter = 0
+
     for row in dataReader:
         locfunction = LocFunction()
         locfunction.functioncode = row[0]
         locfunction.description = row[1]
         locfunction.version = objversion
-        locfunction.save()
+        try:
+            with transaction.atomic():
+                locfunction.save()
+                savecounter += 1
+        except IntegrityError as ex:
+            logger.exception(ex)
+            logger.exception += 1
+
         rowcounter += 1
 
-    return str(rowcounter) + " function classifiers imported for version: " + version
+    msg = str(rowcounter) + " Function classifiers (" + version + ") processed: " + str(savecounter) + \
+          " created / " + str(skipcounter) + " skipped."
+
+    logger.info(msg)
+
+    return msg
 
 
 def importStatusIndicators(objversion, version, path):
+    logger = logging.getLogger(__name__)
     csv_filepathname = path + "StatusIndicators.txt"
     dataReader = csv.reader(open(csv_filepathname, encoding='utf-8'), delimiter=',', quotechar='"')
 
     rowcounter = 0
+    skipcounter = 0
+    savecounter = 0
+
     for row in dataReader:
         locstatus = LocStatus()
         locstatus.statuscode = row[0]
         locstatus.description = row[1]
         locstatus.version = objversion
-        locstatus.save()
+        try:
+            with transaction.atomic():
+                locstatus.save()
+                savecounter += 1
+        except IntegrityError as ex:
+            logger.exception(ex)
+            skipcounter += 1
+
         rowcounter += 1
 
-    return str(rowcounter) + " status indicators imported for version: " + version
+    msg = str(rowcounter) + " Status Indicators (" + version + ") processed: " + str(savecounter) + \
+          " created / " + str(skipcounter) + " skipped."
+
+    logger.info(msg)
+
+    return msg
 
 
 def importLocSubdivision(objversion, version, path):
+    logger = logging.getLogger(__name__)
     csv_filepathname = path + "SubdivisionCodes.txt"
     dataReader = csv.reader(open(csv_filepathname, encoding='utf-8'), delimiter=',', quotechar='"')
     rowcounter = 0
+    skipcounter = 0
+    savecounter = 0
     for row in dataReader:
         locsubdivision = LocSubdivision()
-        #locsubdivision.alpha2code = row[0]
-        locsubdivision.alpha2code = LocCountry.objects.filter(alpha2code = row[0], version = version).first()
+        locsubdivision.alpha2code = LocCountry.objects.filter(alpha2code=row[0], version=version).first()
         locsubdivision.shortcode = row[1]
         locsubdivision.name = row[2]
         locsubdivision.version = objversion
-        locsubdivision.save()
+        try:
+            with transaction.atomic():
+                locsubdivision.save()
+                savecounter += 1
+        except IntegrityError as ex:
+            logger.exception(ex)
+            skipcounter += 1
+
         rowcounter += 1
 
-    return str(rowcounter) + " subdivision imported for version: " + version
+    msg = str(rowcounter) + " Subdivisions (" + version + ") processed: " + str(savecounter) + \
+          " created / " + str(skipcounter) + " skipped."
+
+    logger.info(msg)
+
+    return msg
 
 
 def importCodeList(objversion, version, path):
@@ -129,7 +203,8 @@ def importCodeList(objversion, version, path):
             locode.locodeplace = row[2]
             locode.locname = row[3]
             locode.locnamewodia = row[4]
-            locode.locsubdivision = LocSubdivision.objects.filter(shortcode=row[5], version=objversion, alpha2code=locode.locodecountry_id).first()
+            locode.locsubdivision = LocSubdivision.objects.filter(shortcode=row[5], version=objversion,
+                                                                  alpha2code=locode.locodecountry_id).first()
             locode.locfunction = row[7]
             locode.locstatus = LocStatus.objects.filter(statuscode=row[6], version=objversion).first()
             locode.locdate = row[8]
@@ -144,24 +219,27 @@ def importCodeList(objversion, version, path):
                     savecounter += 1
             except IntegrityError as ex:
                 logger.exception(ex)
-                skipcounter +=1
+                skipcounter += 1
         else:
             skipcounter += 1
 
         rowcounter += 1
 
     msg = str(rowcounter) + " UN/LOCODES (" + version + ") processed: " + str(savecounter) + \
-           " created / " + str(skipcounter) + " skipped."
+          " created / " + str(skipcounter) + " skipped."
 
     logger.info(msg)
     return msg
 
 
 def importsubdivisons():
+    logger = logging.getLogger(__name__)
     csv_filepathname = os.getcwd() + "/unlocode/data/subdivisions.txt"
     dataReader = csv.reader(open(csv_filepathname, encoding='utf-8'), dialect='excel-tab')
     # dataReader = csv.reader(open(csv_filepathname), delimter=',', quotechar='"')
 
+    savecounter = 0
+    skipcounter = 0
     rowcounter = 0
     for row in dataReader:
         if not rowcounter == 0:
@@ -171,11 +249,21 @@ def importsubdivisons():
             subdivision.name = row[2]
             subdivision.alpha2code = (subdivision.level1 + subdivision.level2).split("-", 1)[0]
             subdivision.shortcode = (subdivision.level1 + subdivision.level2).split("-", 1)[1]
-            subdivision.save()
+            try:
+                with transaction.atomic():
+                    subdivision.save()
+                    savecounter += 1
+            except IntegrityError as ex:
+                logger.exception(ex)
+                skipcounter += 1
 
         rowcounter += 1
 
-    return str(rowcounter) + " subdivisions imported"
+    msg = str(rowcounter) + " Subdivisions processed: " + str(savecounter) + \
+          " created / " + str(skipcounter) + " skipped."
+
+    logger.info(msg)
+    return msg
 
 
 def importcountries():
@@ -210,7 +298,7 @@ def check_for_complete_set(filelist):
 
     for items in filelist:
         if items in loc_set:
-            loc_set.update({items:True})
+            loc_set.update({items: True})
 
     return list(loc_set.items())
 
@@ -226,7 +314,7 @@ def get_file_names(directory):
 
 
 def check_version_dir(version):
-    dirpath = os.getcwd() + "/unlocode/data/versions/"+version
+    dirpath = os.getcwd() + "/unlocode/data/versions/" + version
     if os.path.exists(dirpath):
         files = get_file_names(dirpath)
     else:

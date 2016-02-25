@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% load static %}{% load i18n %}
+{% block title %}Function{% endblock %}
+
+{% block content %}
+
+    <br>
+    <h2>{{ function.code }} </h2><br>
+    Description: {{ function.description }}<br>
+    Created on: {{ function.created }} <br>
+    Modified on: {{ function.modified }} <br>
+    Edited by: {{ function.creator }}
+
+        <a href={% url 'mylocation:function-update' function.code %} class="btn btn-primary btn-large" role="button" >Change</a>
+        <a href={% url 'mylocation:function-delete' function.code %} class="btn btn-danger btn-large" role="button" >Delete</a>
+
+
+{% endblock content %}

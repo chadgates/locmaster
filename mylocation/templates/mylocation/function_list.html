@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% load static %}{% load i18n %}
+{% block title %}Functions{% endblock %}
+
+{% block content %}
+    <br>
+    <div class="container">
+        <h2>Functions</h2>
+    </div>
+
+    <div class="table-container">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Code</th>
+                    <th>Description</th>
+                    <th>Last change</th>
+                    <th>Creator</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+
+
+            <tbody>
+
+                    {% for function in functions %}
+                    <tr>
+                        <th scope="row"><a href={{ function.get_absolute_url }}> {{ function.code}} </a> </th>
+                        <td> {{ function.description }} </td>
+                        <td> {% if function.modified %} {{ function.modified }} {% else %} {{ function.created }}{% endif %}</td>
+                        <td>{{ function.creator }}</td>
+                        <td> <a href={% url 'mylocation:function-update' function.code %} class="btn btn-success btn-sm"><i class="fa fa-pencil" ></i></a>&nbsp; <a href={% url 'mylocation:function-delete' function.code %} class="btn btn-danger btn-sm"> <i class="fa fa-trash"></i></a></td>
+                    </tr>
+                    {% endfor %}
+
+                    {%  if functions.count == 0 %}
+                    <tr><td colspan="5">No function exists yet. Create one to get started.</td></tr>
+                    {% endif %}
+            </tbody>
+        </table>
+         <a href={% url 'mylocation:function-create' %} class="btn btn-primary btn-large" role="button" >Add new</a>
+    </div>
+{% endblock content %}

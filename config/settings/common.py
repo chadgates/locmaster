@@ -33,6 +33,8 @@ DJANGO_APPS = (
 
     # Admin
     'django.contrib.admin',
+
+
 )
 THIRD_PARTY_APPS = (
     'crispy_forms',  # Form layouts
@@ -44,8 +46,12 @@ THIRD_PARTY_APPS = (
 # Apps specific for this project go here.
 LOCAL_APPS = (
     'locmaster.users',  # custom users app
+
     # Your stuff: custom apps go here
     'unlocode',
+    'mylocation',
+    # GIS
+    'django.contrib.gis',
 )
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
@@ -100,10 +106,10 @@ MANAGERS = ADMINS
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#databases
 DATABASES = {
     # Raises ImproperlyConfigured exception if DATABASE_URL not in os.environ
-    'default': env.db("DATABASE_URL", default="postgres:///locmaster"),
+    'default': env.db("DATABASE_URL", default="postgis:///locmaster"),
 }
 DATABASES['default']['ATOMIC_REQUESTS'] = True
-
+#DATABASE_ROUTERS = ['mylocation.routers.MyLocationRouter',]
 
 # GENERAL CONFIGURATION
 # ------------------------------------------------------------------------------
@@ -228,7 +234,7 @@ AUTOSLUG_SLUGIFY_FUNCTION = 'slugify.slugify'
 ########## CELERY
 INSTALLED_APPS += ('locmaster.taskapp.celery.CeleryConfig',)
 # if you are not using the django database broker (e.g. rabbitmq, redis, memcached), you can remove the next line.
-INSTALLED_APPS += ('kombu.transport.django',)
+#INSTALLED_APPS += ('kombu.transport.django',)
 BROKER_URL = env("CELERY_BROKER_URL", default='django://')
 ########## END CELERY
 

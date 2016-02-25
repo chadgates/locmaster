@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% load static %}{% load i18n %}
+{% block title %}Delete Function ?{% endblock %}
+
+{% block content %}
+    <br>
+    <form action="" method="post">{% csrf_token %}
+    {{ form|crispy }}
+        <p>Are you sure you want to delete "{{ function }}"?</p>
+        <input type="submit" class="btn btn-danger" value="Confirm" />
+     <a href={% url 'mylocation:function-list' %} class="btn btn-secondary btn-large" role="button" >Cancel</a>
+    </form>
+
+{% endblock content %}

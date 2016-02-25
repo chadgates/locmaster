@@ -115,12 +115,24 @@ module.exports = function (grunt) {
       runMailHog: {
         cmd: './mailhog'
       },
+      runRabbitMQ: {
+        cmd: '/usr/local/sbin/rabbitmq-server'
+      },
+      runCeleryWorker: {
+        cmd: 'python <%= paths.manageScript %> celery -A locmaster.taskapp worker -l info'
+      },
+      runCeleryMonitor: {
+        cmd: 'python <%= paths.manageScript %> celery -A locmaster.taskapp flower --port:5555'
+      },
     }
   });
 
   grunt.registerTask('serve', [
     'bgShell:runMailHog',
     'bgShell:runDjango',
+    'bgShell:runRabbitMQ',
+    'bgShell:runCeleryWorker',
+    'bgShell:runCeleryMonitor',
     'watch'
   ]);
 

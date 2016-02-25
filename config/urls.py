@@ -8,6 +8,8 @@ from django.contrib import admin
 from django.views.generic import TemplateView
 from django.views import defaults as default_views
 
+
+
 urlpatterns = [
     url(r'^$', TemplateView.as_view(template_name='pages/home.html'), name="home"),
     url(r'^about/$', TemplateView.as_view(template_name='pages/about.html'), name="about"),
@@ -22,6 +24,8 @@ urlpatterns = [
     # Your stuff: custom urls includes go here
     url(r'^unlocode/', include('unlocode.urls', namespace="unlocode")),
     url(r'^api/', include('locmasterapi.urls', namespace="api")),
+    url(r'^mylocation/', include('mylocation.urls', namespace="mylocation")),
+
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
