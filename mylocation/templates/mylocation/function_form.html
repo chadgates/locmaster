@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% load static %}{% load i18n %}
+{% block title %}Function{% endblock %}
+
+{% block content %}
+    <br>
+    <form action="" method="post">
+        {% csrf_token %}
+
+        {{ form|crispy }}
+
+        {% if function.code %}
+            <input type="submit" class="btn btn-primary" name = "save" value="Save" />
+        {% else %}
+            <input type="submit" class="btn btn-primary" name = "save" value="Add" />
+        {% endif %}
+
+        <a href={% url 'mylocation:function-list' %} class="btn btn-secondary btn-large" role="button" >Cancel</a>
+    </form>
+
+{% endblock content %}

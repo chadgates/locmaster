@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% load static %}{% load i18n %}
+{% block title %}Versions{% endblock %}
+
+{% block content %}
+    <br>
+    <form action="" method="post">
+        {% csrf_token %}
+        {{ form|crispy }}
+        {% if files %}
+                    <br>
+            <table>
+                <th>File Name</th>
+                <th>Status</th>
+            {% for file in files %}
+                <tr>
+                    <td>{{ file.0 }}</td>
+                    {% if file.1 %}
+                        <td class="text-success"><i class="fa fa-check-circle"></i></td>
+                        {% else %}
+                        <td class="text-danger"><i class="fa fa-times-circle"></i></td>
+                    {% endif %}
+                </tr>
+            {% endfor %}
+          </table>
+        <br>
+
+        {% endif %}
+
+        {% if object.version %}
+            <input type="submit" class="btn btn-primary" name = "save" value="Save" />
+
+            {% if complete  %}
+                <input type="submit" class="btn btn-secondary" name = "load" value="Load Data" />
+            {% else %}
+                <input disabled type="submit" class="btn btn-secondary" name = "load" value="Load Data" />
+            {% endif %}
+
+        {% else %}
+            <input type="submit" class="btn btn-primary" name = "save" value="Add" />
+        {% endif %}
+
+        <a href={% url 'unlocode:list' %} class="btn btn-secondary btn-large" role="button" >Cancel</a>
+</form>
+
+
+{% endblock content %}

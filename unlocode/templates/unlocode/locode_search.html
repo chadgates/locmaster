@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% load static %}{% load i18n %}
+{% block title %}Versions{% endblock %}
+
+{% block content %}
+    <br>
+    <form action="" method="GET">
+    {{ form|crispy }}
+        <div class="input-group">
+            <input type="text" class="form-control" placeholder="Search for..." name="q">
+            <span class="input-group-btn">
+            <button class="btn btn-primary" type="button">Go!</button>
+      </span>
+    </div>
+    </form>
+
+    <br>
+        <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <th>Chg</th>
+                <th>Country</th>
+                <th>Place</th>
+                <th>Name</th>
+                <th>Name(-dia)</th>
+                <th>Subdiv</th>
+                <th>Function</th>
+                <th>Date</th>
+                <th>IATA</th>
+                <th>Coordinates</th>
+                <th>Remarks</th>
+                <th>Status</th>
+                <th>Version</th>
+                <th>Action</th>
+            </thead>
+            <tbody>
+              {% for location in unlocode %}
+                <tr>
+                    <td>{{ location.locchangeindicator|default_if_none:""  }}</td>
+                    <td>{{ location.locodecountry }}</td>
+                    <td>{{ location.locodeplace }}</td>
+                    <td>{{ location.locname }}</td>
+                    <td>{{ location.locnamewodia }}</td>
+                    <td>{{ location.locsubdivision|default_if_none:""  }}</td>
+                    <td>{{ location.locfunction }}</td>
+                    <td>{{ location.locdate }}</td>
+                    <td>{{ location.lociata }}</td>
+                    <td>{{ location.locoordinates }}</td>
+                    <td>{{ location.locremarks }}</td>
+                    <td>{{ location.locstatus|default_if_none:"" }}</td>
+                    <td>{{ location.version }}</td>
+                    <td><a href={% url 'unlocode:list-code' location.locode %} class="btn btn-secondary btn-sm"><i class="fa fa-info" ></i></a></td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+    <br>
+
+{% endblock content %}
