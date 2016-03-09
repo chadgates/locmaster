@@ -129,6 +129,5 @@ class LocodeInfo(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(LocodeInfo,self).get_context_data(**kwargs)
-        context["info"] = os.getcwd().__str__()
-        print (os.getcwd())
+        context["info"] = os.getcwd() + "/unlocode/data/versions/TEST-1"
         return context

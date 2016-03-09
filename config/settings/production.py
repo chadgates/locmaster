@@ -212,3 +212,9 @@ ADMIN_URL = env('DJANGO_ADMIN_URL')
 
 DATABASES['default'] = dj_database_url.config()
 DATABASES['default']['ENGINE'] = 'django.contrib.gis.db.backends.postgis'
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+
+INSTALLED_APPS += ('djcelery', )
+CELERY_RESULT_BACKEND='djcelery.backends.database:DatabaseBackend'
