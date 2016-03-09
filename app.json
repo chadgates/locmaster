@@ -23,7 +23,8 @@
     "DJANGO_MAILGUN_API_KEY": "",
     "DJANGO_OPBEAT_ORGANIZATION_ID": "",
     "DJANGO_OPBEAT_APP_ID": "",
-    "DJANGO_OPBEAT_SECRET_TOKEN":""
+    "DJANGO_OPBEAT_SECRET_TOKEN":"",
+    "CELERY_BROKER_URL":""
   },
   "scripts": {
     "postdeploy": "python manage.py migrate"
