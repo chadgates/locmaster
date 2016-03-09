@@ -31,6 +31,7 @@
   "addons": [
     "heroku-postgresql:hobby-dev",
     "heroku-redis:hobby-dev",
-    "mailgun"
+    "mailgun",
+    "cloudamqp:lemur"
   ]
 }
