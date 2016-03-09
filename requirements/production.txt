@@ -29,3 +29,4 @@ django-mailgun==0.8.0
 # Opbeat agent for performance monitoring
 # -----------------------------------------
 opbeat
+dj-database-url
