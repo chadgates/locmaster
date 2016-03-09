@@ -10,7 +10,7 @@ from unlocode.initializedata import populateInitial
 from unlocode.csvimport import check_version_dir
 from unlocode.tasks import importVersion
 from django.db.models import Q
-
+import os
 
 class UnLocVersionMixin(object):
     model = LocVersion
@@ -122,4 +122,13 @@ class Populate(TemplateView):
         return super(TemplateView, self).render_to_response(context)
 
 
+class LocodeInfo(TemplateView):
 
+    template_name = 'unlocode/locode_info.html'
+    allow_empty = False
+
+    def get_context_data(self, **kwargs):
+        context = super(LocodeInfo,self).get_context_data(**kwargs)
+        context["info"] = os.getcwd().__str__()
+        print (os.getcwd())
+        return context

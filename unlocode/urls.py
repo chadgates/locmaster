@@ -52,6 +52,11 @@ urlpatterns = [
         name='populate',
     ),
     url(
+        regex=r'^locodeinfo/$',
+        view=unlocode_views.LocodeInfo.as_view(),
+        name='populate',
+    ),
+    url(
         regex=r'^code/(?P<locode>[\w\-]+)/$',
         view=unlocode_views.UnLocodeList.as_view(),
         name='list-code',
