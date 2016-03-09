@@ -63,3 +63,8 @@ tests/.hitch
 
 # MailHog binary
 mailhog
+mylocation/data/EPSG-and-GML-3
+mylocation/data/EPSG_Polygons_Ver_8
+mylocation/data/IHS
+mylocation/data/TM_WORLD_BORDERS-0
+mylocation/data/epsg-v8_8sql-PostgreSQL
