@@ -1,23 +1,7 @@
-from django.shortcuts import render
-from rest_framework.generics import ListAPIView
-from rest_framework.generics import RetrieveAPIView
-from unlocode.models import Locode
-from locmasterapi.serializers import LocodeSerializer
 from django.http import HttpResponseGone
 
-class V1_LocodeList(ListAPIView):
-    queryset = Locode.objects.all()
-    serializer_class = LocodeSerializer
-    lookup_field = 'locode'
 
-
-class V1_LocodeDetail(RetrieveAPIView):
-    queryset = Locode.objects.all().order_by('locode', 'version').distinct('locode')
-    serializer_class = LocodeSerializer
-    lookup_field = 'locode'
-
-
-def v0_gone(request):
+def gone(request):
     apiv0_gone_msg = """APIv0 was removed on January 31, 2016. Please switch to APIv1:
                         <ul>
                             <li>

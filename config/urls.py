@@ -23,7 +23,6 @@ urlpatterns = [
 
     # Your stuff: custom urls includes go here
     url(r'^unlocode/', include('unlocode.urls', namespace="unlocode")),
-    url(r'^api/', include('locmasterapi.urls', namespace="api")),
     url(r'^mylocation/', include('mylocation.urls', namespace="mylocation")),
 
 

@@ -1,5 +1,7 @@
 from django.conf.urls import url
 from unlocode import views as unlocode_views
+from unlocode.viewsets import v0 as v0_views
+from unlocode.viewsets import v1 as v1_views
 
 
 urlpatterns = [
@@ -58,5 +60,24 @@ urlpatterns = [
         regex=r'^code/$',
         view=unlocode_views.UnLocodeSearch.as_view(),
         name='list-search',
+    ),
+
+    # URL pattern for the UNLocVersionList V1
+    url(
+        regex=r'^api/v1/$',
+        view=v1_views.LocodeList.as_view(),
+        name='v1-list',
+    ),
+    # URL pattern for the UnLocVersionDetailView V1
+    url(
+        regex=r'^api/v1/(?P<locode>[\w\-]+)/$',
+        view=v1_views.LocodeDetail.as_view(),
+        name='v1-detail',
+    ),
+    # URL pattern for the UnLocVersionList V0
+    url(
+        regex=r'^api/v0/',
+        view=v0_views.gone,
+        name='v0-list',
     ),
 ]
