@@ -18,6 +18,7 @@ from django.utils import six
 
 
 from .common import *  # noqa
+from os import environ
 
 # SECRET CONFIGURATION
 # ------------------------------------------------------------------------------
