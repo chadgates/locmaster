@@ -1,3 +1,7 @@
+.. image:: https://requires.io/github/chadgates/locmaster/requirements.svg?branch=master
+     :target: https://requires.io/github/chadgates/locmaster/requirements/?branch=master
+     :alt: Requirements Status
+
 locmaster
 ==============================
 
