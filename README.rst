@@ -2,6 +2,11 @@
      :target: https://requires.io/github/chadgates/locmaster/requirements/?branch=master
      :alt: Requirements Status
 
+
+.. image:: https://codeship.com/projects/cf612860-c999-0133-2f84-56d7a1bc9a71/status.svg?branch=master
+    :target: https://codeship.com/projects/cf612860-c999-0133-2f84-56d7a1bc9a71/status?branch=master
+    :alt: Build Status
+
 locmaster
 ==============================
 
