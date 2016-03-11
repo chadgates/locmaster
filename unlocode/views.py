@@ -8,7 +8,7 @@ from django.core.urlresolvers import reverse_lazy
 from unlocode.models import LocVersion, Locode
 from unlocode.initializedata import populateInitial
 from unlocode.csvimport import check_version_dir
-from unlocode.tasks import importVersion
+from unlocode.tasks import importVersion, orderPizza
 from django.db.models import Q
 import os
 
@@ -131,3 +131,7 @@ class LocodeInfo(TemplateView):
         context = super(LocodeInfo,self).get_context_data(**kwargs)
         context["info"] = os.getcwd() + "/unlocode/data/versions/TEST-1"
         return context
+
+    def post(self, request, *args, **kwargs):
+            orderPizza.delay("Napoli con extra Scharf")
+            return super(LocodeInfo, self).get(request, *args, **kwargs)

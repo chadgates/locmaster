@@ -8,3 +8,10 @@ from unlocode.csvimport import importUNLOCODE
 def importVersion(version):
     result = importUNLOCODE(version)
     return result
+
+@shared_task
+def orderPizza(buitoni):
+    result = buitoni + " is a really nice pizza. Enjoy !"
+    return result
+
+
